@@ -1,7 +1,5 @@
-'use client';
-
 import Image from 'next/image';
-import TitleCard from '@/components/title-card';
+import InfoCard from '@/components/info-card';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -13,52 +11,11 @@ import {
   Landmark,
   PlusIcon,
 } from 'lucide-react';
-import { useConfig } from '@/hooks/use-config';
-import { useTheme } from 'next-themes';
-import { Line, LineChart, ResponsiveContainer } from 'recharts';
-import { themes } from '@/registry/themes';
-
-const data = [
-  {
-    revenue: 10400,
-    subscription: 240,
-  },
-  {
-    revenue: 14405,
-    subscription: 300,
-  },
-  {
-    revenue: 9400,
-    subscription: 200,
-  },
-  {
-    revenue: 8200,
-    subscription: 278,
-  },
-  {
-    revenue: 7000,
-    subscription: 189,
-  },
-  {
-    revenue: 9600,
-    subscription: 239,
-  },
-  {
-    revenue: 11244,
-    subscription: 278,
-  },
-  {
-    revenue: 26475,
-    subscription: 189,
-  },
-];
+import DailySpending from '@/components/daily-spending';
+import AddButton from '@/components/add-button';
+import Link from 'next/link';
 
 export default function Home() {
-  const { theme: mode } = useTheme();
-  const [config] = useConfig();
-
-  const theme = themes.find((theme) => theme.name === config.theme);
-
   return (
     <div className="grid grid-cols-8 gap-8 m-8">
       <div className="flex flex-row justify-between col-span-full">
@@ -72,62 +29,16 @@ export default function Home() {
             Feb 09, 2023
           </Button>
           <Button variant={'outline'}>Export CSV</Button>
-          <Button>
-            <PlusIcon className="w-4 h-4" />
-          </Button>
+          <AddButton />
         </div>
       </div>
 
-      <TitleCard title="Total Spending" value="$123.20" Icon={Banknote} />
-      <TitleCard title="Transactions" value="30" Icon={CreditCard} />
-      <TitleCard title="Net Worth" value="$4321.92" Icon={DollarSign} />
-      <TitleCard title="Accounts" value="5" Icon={Landmark} />
+      <InfoCard title="Total Spending" value="$123.20" Icon={Banknote} />
+      <InfoCard title="Transactions" value="30" Icon={CreditCard} />
+      <InfoCard title="Net Worth" value="$4321.92" Icon={DollarSign} />
+      <InfoCard title="Accounts" value="5" Icon={Landmark} />
 
-      <Card className="col-span-3 border-muted-foreground">
-        <CardHeader>
-          <CardTitle className="text-base font-medium text-muted-foreground">
-            Daily Spending
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">$1290.29</div>
-          <p className="text-xs text-muted-foreground">
-            +20.1% from last month
-          </p>
-          <div className="h-[80px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={data}
-                margin={{
-                  top: 5,
-                  right: 10,
-                  left: 10,
-                  bottom: 0,
-                }}
-              >
-                <Line
-                  type={'monotone'}
-                  strokeWidth={2}
-                  dataKey={'revenue'}
-                  activeDot={{
-                    r: 6,
-                    style: { fill: 'var(--theme-primary)', opacity: 0.25 },
-                  }}
-                  style={
-                    {
-                      stroke: 'var(--theme-primary)',
-                      '--theme-primary': `hsl(${
-                        theme?.cssVars[mode === 'dark' ? 'dark' : 'light']
-                          .primary
-                      })`,
-                    } as React.CSSProperties
-                  }
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <DailySpending />
     </div>
   );
 }

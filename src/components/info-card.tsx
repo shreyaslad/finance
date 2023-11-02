@@ -2,13 +2,13 @@ import { DollarSign, LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { ComponentType, ReactComponentElement, ReactElement } from 'react';
 
-type TitleCardProps = {
+type InfoCardProps = {
   title: string;
   value: string;
   Icon: LucideIcon;
 };
 
-export default function TitleCard({ title, value, Icon }: TitleCardProps) {
+export default function InfoCard({ title, value, Icon }: InfoCardProps) {
   return (
     <Card className="col-span-2 border-muted">
       <CardHeader className="flex flex-row items-center justify-between">
