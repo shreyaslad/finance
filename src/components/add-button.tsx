@@ -112,6 +112,61 @@ export default function AddButton() {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      role="combobox"
+                      aria-expanded={open}
+                      className="justify-between"
+                    >
+                      {value
+                        ? statementTypes.find((type) => type.value === value)
+                            ?.label
+                        : 'Select type...'}
+
+                      <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+
+                  <PopoverContent className="p-0">
+                    <Command>
+                      <CommandInput placeholder="Search types..." />
+                      <CommandEmpty>No type found.</CommandEmpty>
+                      <CommandGroup>
+                        {statementTypes.map((type) => (
+                          <CommandItem
+                            key={type.value}
+                            value={type.value}
+                            onSelect={(currentValue) => {
+                              setValue(
+                                currentValue === value ? '' : currentValue
+                              );
+                              setOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                'mr-2 h-4 w-4',
+                                value === type.value
+                                  ? 'opacity-100'
+                                  : 'opacity-0'
+                              )}
+                            />
+                            {type.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              )}
+            />
           </form>
         </Form>
 
