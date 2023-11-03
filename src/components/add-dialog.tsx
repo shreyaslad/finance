@@ -13,6 +13,39 @@ import {
 import { dialogOpenAtom } from '@/atoms/dialog-atom';
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import { Input } from './ui/input';
+
+const statementTypes = [
+  {
+    value: 'wf',
+    label: 'Wells Fargo',
+  },
+  {
+    value: 'citi',
+    label: 'CitiBank',
+  },
+  {
+    value: 'amex',
+    label: 'Amex',
+  },
+  {
+    value: 'applesavings',
+    label: 'Apple Savings',
+  },
+  {
+    value: 'applecard',
+    label: 'Apple Card',
+  },
+];
 
 export default function AddDialog() {
   const [dialogOpen, setDialogOpen] = useAtom(dialogOpenAtom);
@@ -28,24 +61,38 @@ export default function AddDialog() {
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter>
-          <Button
-            onClick={() => {
-              setProcessing(true);
-              setTimeout(() => {
-                setProcessing(false);
-                setDialogOpen(false);
-              }, 5000);
-            }}
-            disabled={processing}
-          >
-            {processing ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : null}
+        <Select>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a source" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {/* <SelectLabel>Sources</SelectLabel> */}
+              {statementTypes.map((item) => (
+                <SelectItem value={item.value}>{item.label}</SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
-            <span>{processing ? 'Uploading' : 'Upload'}</span>
-          </Button>
-        </DialogFooter>
+        <Input type="file" />
+
+        <Button
+          onClick={() => {
+            setProcessing(true);
+            setTimeout(() => {
+              setProcessing(false);
+              setDialogOpen(false);
+            }, 5000);
+          }}
+          disabled={processing}
+        >
+          {processing ? (
+            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          ) : null}
+
+          <span>{processing ? 'Uploading' : 'Upload'}</span>
+        </Button>
       </DialogContent>
     </Dialog>
   );
