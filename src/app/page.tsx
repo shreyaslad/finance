@@ -1,5 +1,11 @@
 import Image from 'next/image';
+import Link from 'next/link';
+
 import InfoCard from '@/components/info-card';
+import AddButton from '@/components/add-button';
+import DailySpending from '@/components/daily-spending';
+import AddDialog from '@/components/add-dialog';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -11,9 +17,6 @@ import {
   Landmark,
   PlusIcon,
 } from 'lucide-react';
-import DailySpending from '@/components/daily-spending';
-import AddButton from '@/components/add-button';
-import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -30,6 +33,7 @@ export default function Home() {
           </Button>
           <Button variant={'outline'}>Export CSV</Button>
           <AddButton />
+          <AddDialog />
         </div>
       </div>
 
