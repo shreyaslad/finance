@@ -37,6 +37,7 @@ import {
 } from './ui/form';
 
 import { useForm } from 'react-hook-form';
+import { StatusCodes } from 'http-status-codes';
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -81,6 +82,11 @@ const formSchema = z.object({
     }),
 });
 
+type UrlJson = {
+  url: string;
+  expires: number;
+};
+
 export default function AddDialog() {
   const [dialogOpen, setDialogOpen] = useAtom(dialogOpenAtom);
   const [processing, setProcessing] = useState(false);
@@ -97,13 +103,29 @@ export default function AddDialog() {
     console.log('File name: ' + file.name);
 
     setProcessing(true);
-    const res = await fetch(`/api/upload`, {
+    const urlResponse = await fetch(`/api/upload`, {
       method: 'POST',
       body: JSON.stringify({
         name: file.name,
       }),
     });
-    console.log(await res.json());
+
+    const urlJson: UrlJson = await urlResponse.json();
+
+    const uploadRes = await fetch(urlJson.url, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type || 'application/octet-stream',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
+
+    if (uploadRes.status == StatusCodes.OK) {
+      console.log(`Sucessfully uploaded ${file.name}!`);
+    } else {
+      console.log(`Failed to upload ${file.name}`);
+    }
 
     setProcessing(false);
     setDialogOpen(false);
