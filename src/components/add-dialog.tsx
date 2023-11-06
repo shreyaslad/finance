@@ -26,7 +26,6 @@ import {
   SelectValue,
 } from './ui/select';
 import { Input } from './ui/input';
-import { useForm } from 'react-hook-form';
 import {
   Form,
   FormControl,
@@ -36,6 +35,8 @@ import {
   FormLabel,
   FormMessage,
 } from './ui/form';
+
+import { useForm } from 'react-hook-form';
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -88,15 +89,24 @@ export default function AddDialog() {
     resolver: zodResolver(formSchema),
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log('Statement type: ' + data.statementType);
-    console.log('File name: ' + data.statementFile[0].name);
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    const statementType = data.statementType;
+    const file = data.statementFile[0];
+
+    console.log('Statement type: ' + statementType);
+    console.log('File name: ' + file.name);
 
     setProcessing(true);
-    setTimeout(() => {
-      setProcessing(false);
-      setDialogOpen(false);
-    }, 5000);
+    const res = await fetch(`/api/upload`, {
+      method: 'POST',
+      body: JSON.stringify({
+        name: file.name,
+      }),
+    });
+    console.log(await res.json());
+
+    setProcessing(false);
+    setDialogOpen(false);
   }
 
   return (
