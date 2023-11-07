@@ -38,7 +38,7 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { StatusCodes } from 'http-status-codes';
-import { UrlResponse, statementTypes } from '@/lib/api';
+import { UrlResponse } from '@/lib/api';
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -46,6 +46,29 @@ const ACCEPTED_IMAGE_TYPES = [
   'image/jpg',
   'image/png',
   'image/webp',
+];
+
+export const statementTypes = [
+  {
+    value: 'wf',
+    label: 'Wells Fargo',
+  },
+  {
+    value: 'citi',
+    label: 'CitiBank',
+  },
+  {
+    value: 'amex',
+    label: 'Amex',
+  },
+  {
+    value: 'applesavings',
+    label: 'Apple Savings',
+  },
+  {
+    value: 'applecard',
+    label: 'Apple Card',
+  },
 ];
 
 // https://github.com/colinhacks/zod/issues/387#issuecomment-1191390673
