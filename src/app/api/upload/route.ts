@@ -8,29 +8,26 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
 import { BUCKET, EXPIRATION, UrlResponse } from '@/lib/api';
+import { randomUUID } from 'crypto';
 
 const s3Client = new S3Client({ region: 'us-west-2' });
 
 export async function POST(request: Request) {
   const uploadRequest: UrlResponse = await request.json();
 
-  if (!uploadRequest.key) {
-    return NextResponse.json('Invalid upload key!', {
-      status: StatusCodes.BAD_REQUEST,
-    });
-  }
+  const randomKey = randomUUID();
 
   // Construct presigned urls for uploading and retrieving files
   // ChatGPT needs a static url to image files it recieves
 
   const uploadCommand = new PutObjectCommand({
     Bucket: BUCKET,
-    Key: uploadRequest.key,
+    Key: randomKey,
   });
 
   const getCommand = new GetObjectCommand({
     Bucket: BUCKET,
-    Key: uploadRequest.key,
+    Key: randomKey,
   });
 
   const getUrl = await getSignedUrl(s3Client, getCommand, {
@@ -41,8 +38,9 @@ export async function POST(request: Request) {
   });
 
   const res: UrlResponse = {
+    name: uploadRequest.name,
+    key: randomKey,
     bucket: BUCKET,
-    key: uploadRequest.key,
     getUrl: getUrl,
     uploadUrl: uploadUrl,
     expires: EXPIRATION,

@@ -24,9 +24,14 @@ export const statementTypes = [
   },
 ];
 
+export type UploadRequest = {
+  name: string;
+};
+
 export type UrlResponse = {
-  bucket: string;
+  name: string;
   key: string;
+  bucket: string;
   getUrl: string;
   uploadUrl: string;
   expires: number;
