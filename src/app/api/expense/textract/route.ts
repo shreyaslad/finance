@@ -19,14 +19,14 @@ const openai = new OpenAI();
 
 const prompt = `Extract the following information from an array of expense reports:
 - date: string
-- expenseType: "shopping" | "health" | "food" | "services" | "travel" | "payment"
+- expenseType: "shopping" | "health" | "food" | "services" | "payment"
 - vendor: string
 - price: string
 - location: string
 
-- If any fields cannot be properly found, mark them as null.
-- Fields marked as "Payment" should have an "expenseType" of "payment" and nothing else.
-- Remove the plus sign in front of the price where possible.
+- If a field cannot be found, mark it as null.
+- Fields marked as "Payment" should have an "expenseType" of "payment".
+- Remove plus signs in front of prices.
 - Convert all relative dates into actual dates, given that today's date is {date}.
 
 Expense reports:
