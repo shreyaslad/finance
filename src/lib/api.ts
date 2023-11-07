@@ -29,6 +29,15 @@ export type ExpenseType =
   | 'travel'
   | 'payment';
 
+export type FormattedExpense = {
+  date: Date | undefined;
+  statementType: StatementType | undefined;
+  expenseType: ExpenseType | undefined;
+  vendor: string | undefined;
+  price: string | undefined;
+  location: string | undefined;
+};
+
 export type ExpenseRequest = {
   file: UrlResponse;
   type: StatementType;

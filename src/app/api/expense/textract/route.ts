@@ -1,33 +1,40 @@
 import {
   ExpenseRequest,
   ExpenseType,
+  FormattedExpense,
   StatementType,
   UrlResponse,
 } from '@/lib/api';
+import { StatusCodes } from 'http-status-codes';
+import { NextResponse } from 'next/server';
+
 import {
   TextractClient,
   AnalyzeExpenseCommand,
 } from '@aws-sdk/client-textract';
-import { StatusCodes } from 'http-status-codes';
-import { NextResponse } from 'next/server';
-
-type RawExpense = {
-  date: string | undefined;
-  vendor: string | undefined;
-  price: string | undefined;
-  location: string | undefined;
-};
-
-type FormattedExpense = {
-  date: Date | undefined;
-  statementType: StatementType | undefined;
-  expenseType: ExpenseType | undefined;
-  vendor: string | undefined;
-  price: string | undefined;
-  location: string | undefined;
-};
+import OpenAI from 'openai';
 
 const textractClient = new TextractClient({ region: 'us-west-2' });
+const openai = new OpenAI();
+
+const prompt = `Extract the following information from an array of expense reports:
+- date: string
+- expenseType: "shopping" | "health" | "food" | "services" | "travel" | "payment"
+- vendor: string
+- price: string
+- location: string
+
+- If any fields cannot be properly found, mark them as null.
+- Fields marked as "Payment" should have an "expenseType" of "payment" and nothing else.
+- Remove the plus sign in front of the price where possible.
+- Convert all relative dates into actual dates, given that today's date is {date}.
+
+Expense reports:
+{expense_report}
+
+Only output in JSON and say no additional words.
+
+Output in JSON:`;
 
 export async function POST(request: Request) {
   const expenseRequest: ExpenseRequest = await request.json();
@@ -58,6 +65,9 @@ export async function POST(request: Request) {
     });
   }
 
+  // Flatten all detected expense rows into a single list
+  // e.x.: ['CVS Pharmacy $10.36\nSanta Cruz, CA\n2%\nYesterday', ...]
+
   console.log('Compressing documents...');
   let expenses: string[] = [];
 
@@ -81,7 +91,7 @@ export async function POST(request: Request) {
             expenseField.Type?.Text == 'EXPENSE_ROW' &&
             expenseField.ValueDetection?.Text
           ) {
-            expenses.push(expenseField.ValueDetection.Text);
+            expenses.push(expenseField.ValueDetection.Text.replace('\n', ' '));
           }
         }
       }
@@ -89,6 +99,29 @@ export async function POST(request: Request) {
   }
 
   console.log(expenses);
+  console.log('Parsing expense reports with ChatGPT...');
 
-  return NextResponse.json(expenseResponse.ExpenseDocuments);
+  const completion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: 'user',
+        content: prompt
+          .replace('{date}', new Date().toDateString())
+          .replace('{expense_report}', expenses.toString()),
+      },
+    ],
+    model: 'gpt-3.5-turbo',
+  });
+
+  let formattedExpenses: FormattedExpense[] = JSON.parse(
+    completion.choices[0].message.content || ''
+  );
+
+  for (let expense of formattedExpenses) {
+    expense.statementType = expenseRequest.type;
+  }
+
+  console.log(formattedExpenses);
+
+  return NextResponse.json(formattedExpenses);
 }
