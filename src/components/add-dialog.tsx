@@ -38,6 +38,7 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { StatusCodes } from 'http-status-codes';
+import { UrlResponse, statementTypes } from '@/lib/api';
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -45,29 +46,6 @@ const ACCEPTED_IMAGE_TYPES = [
   'image/jpg',
   'image/png',
   'image/webp',
-];
-
-const statementTypes = [
-  {
-    value: 'wf',
-    label: 'Wells Fargo',
-  },
-  {
-    value: 'citi',
-    label: 'CitiBank',
-  },
-  {
-    value: 'amex',
-    label: 'Amex',
-  },
-  {
-    value: 'applesavings',
-    label: 'Apple Savings',
-  },
-  {
-    value: 'applecard',
-    label: 'Apple Card',
-  },
 ];
 
 // https://github.com/colinhacks/zod/issues/387#issuecomment-1191390673
@@ -81,11 +59,6 @@ const formSchema = z.object({
       message: 'Allowed types: .jpg, .jpeg, .png and .webp',
     }),
 });
-
-type UrlJson = {
-  url: string;
-  expires: number;
-};
 
 export default function AddDialog() {
   const [dialogOpen, setDialogOpen] = useAtom(dialogOpenAtom);
@@ -110,9 +83,11 @@ export default function AddDialog() {
       }),
     });
 
-    const urlJson: UrlJson = await urlResponse.json();
+    // Attempt to upload the statement image to S3
 
-    const uploadRes = await fetch(urlJson.url, {
+    const urlJson: UrlResponse = await urlResponse.json();
+
+    const uploadRes = await fetch(urlJson.uploadUrl, {
       method: 'PUT',
       body: file,
       headers: {
@@ -126,6 +101,20 @@ export default function AddDialog() {
     } else {
       console.log(`Failed to upload ${file.name}`);
     }
+
+    // Now attempt to extract transaction data from the file
+
+    console.log('Extracting expense information from statement...');
+
+    const expenseRes = await fetch('/api/expense/textract', {
+      method: 'POST',
+      body: JSON.stringify({
+        file: urlJson,
+        type: statementType,
+      }),
+    });
+
+    console.log(await expenseRes.json());
 
     setProcessing(false);
     setDialogOpen(false);
@@ -201,7 +190,7 @@ export default function AddDialog() {
                 <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               ) : null}
 
-              <span>{processing ? 'Uploading' : 'Upload'}</span>
+              <span>{processing ? 'Processing' : 'Process'}</span>
             </Button>
           </form>
         </Form>
