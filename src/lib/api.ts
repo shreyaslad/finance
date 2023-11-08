@@ -30,12 +30,12 @@ export type ExpenseType =
   | 'payment';
 
 export type FormattedExpense = {
-  date: Date | undefined;
-  statementType: StatementType | undefined;
-  expenseType: ExpenseType | undefined;
-  vendor: string | undefined;
-  price: string | undefined;
-  location: string | undefined;
+  date: Date;
+  statementType: StatementType;
+  expenseType: ExpenseType | 'shopping';
+  vendor: string | '';
+  price: string | '0.00';
+  location: string | '';
 };
 
 export type ExpenseRequest = {

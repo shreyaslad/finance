@@ -13,11 +13,13 @@ import {
   AnalyzeExpenseCommand,
 } from '@aws-sdk/client-textract';
 import OpenAI from 'openai';
+import postgres from 'postgres';
 
 const textractClient = new TextractClient({ region: 'us-west-2' });
 const openai = new OpenAI();
+const sql = postgres(process.env.POSTGRES_CONN_URL || '');
 
-const prompt = `You are a data extraction robot.
+const prompt = `You are a data extraction robot. Accuracy is of utmost importance.
 You are provided with an expense report (an array of strings) and told to extract information to the best of your ability.
 There are extraction settings you must follow to customize how extracted data should be formatted.
 Extract the following information from an array of expense reports:
@@ -32,7 +34,8 @@ Extraction settings:
 - Convert all relative dates into actual dates, given that today's date is {date}.
 - If a date specifically cannot be found, replace it with the most appropriate date.
 - Fields marked as "Payment" should have an "expenseType" of "payment".
-- Remove plus signs in front of prices.
+- Remove plus signs and dollar signs in front of prices.
+- If fields have more than 3 null values, do not include it
 
 Expense reports:
 {expense_report}
@@ -129,11 +132,24 @@ export async function POST(request: Request) {
     completion.choices[0].message.content || ''
   );
 
+  console.log(formattedExpenses);
+  console.log('Inserting into database...');
+
   for (let expense of formattedExpenses) {
     expense.statementType = expenseRequest.type;
+
+    if (expense.vendor && expense.price) {
+      await sql`
+        INSERT INTO transactions (
+          date, statementType, expenseType, vendor, price, location
+        ) VALUES (
+          ${expense.date}, ${expense.statementType}, ${expense.expenseType}, ${expense.vendor}, ${expense.price}, ${expense.location}
+        )
+      `;
+    }
   }
 
-  console.log(formattedExpenses);
+  console.log('Finished inserting into database');
 
   return NextResponse.json(formattedExpenses);
 }
