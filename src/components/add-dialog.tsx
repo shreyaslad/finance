@@ -38,7 +38,7 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { StatusCodes } from 'http-status-codes';
-import { UrlResponse } from '@/lib/api';
+import { UrlResponse } from '@/lib/apitypes';
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -129,7 +129,7 @@ export default function AddDialog() {
 
     console.log('Extracting expense information from statement...');
 
-    const expenseRes = await fetch('/api/expense/textract', {
+    const expenseRes = await fetch('/api/expense/extract', {
       method: 'POST',
       body: JSON.stringify({
         file: urlJson,

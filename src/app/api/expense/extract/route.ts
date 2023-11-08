@@ -1,10 +1,10 @@
 import {
-  ExpenseRequest,
+  ExtractRequest,
   ExpenseType,
   FormattedExpense,
   StatementType,
   UrlResponse,
-} from '@/lib/api';
+} from '@/lib/apitypes';
 import { StatusCodes } from 'http-status-codes';
 import { NextResponse } from 'next/server';
 
@@ -45,21 +45,21 @@ Only output in JSON and say no additional words.
 Output in JSON:`;
 
 export async function POST(request: Request) {
-  const expenseRequest: ExpenseRequest = await request.json();
+  const extractRequest: ExtractRequest = await request.json();
 
-  console.log(expenseRequest);
+  console.log(extractRequest);
 
   const expenseInput = {
     Document: {
       S3Object: {
-        Bucket: expenseRequest.file.bucket,
-        Name: expenseRequest.file.key,
+        Bucket: extractRequest.file.bucket,
+        Name: extractRequest.file.key,
       },
     },
   };
 
-  const expenseCommand = new AnalyzeExpenseCommand(expenseInput);
-  const expenseResponse = await textractClient.send(expenseCommand);
+  const textractAnalyzeCommand = new AnalyzeExpenseCommand(expenseInput);
+  const textractResponse = await textractClient.send(textractAnalyzeCommand);
 
   // Iterate through each "ExpenseDocument" and flatten them into a normal array
   // Then, use ChatGPT to normalize this data to insert into postgres
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
   // NOTE: This might be better off as an asynchronous operation instead of an API route
   // but right now it doesn't matter
 
-  if (!expenseResponse.ExpenseDocuments) {
+  if (!textractResponse.ExpenseDocuments) {
     return NextResponse.json('Failed to parse any line items from statement!', {
       status: StatusCodes.INTERNAL_SERVER_ERROR,
     });
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
   console.log('Compressing documents...');
   let expenses: string[] = [];
 
-  for (let document of expenseResponse.ExpenseDocuments) {
+  for (let document of textractResponse.ExpenseDocuments) {
     if (!document?.LineItemGroups) {
       continue;
     }
@@ -136,7 +136,7 @@ export async function POST(request: Request) {
   console.log('Inserting into database...');
 
   for (let expense of formattedExpenses) {
-    expense.statementType = expenseRequest.type;
+    expense.statementType = extractRequest.type;
 
     if (expense.vendor && expense.price) {
       await sql`

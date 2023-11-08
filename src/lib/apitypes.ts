@@ -30,6 +30,7 @@ export type ExpenseType =
   | 'payment';
 
 export type FormattedExpense = {
+  id: number | -1;
   date: Date;
   statementType: StatementType;
   expenseType: ExpenseType | 'shopping';
@@ -38,7 +39,12 @@ export type FormattedExpense = {
   location: string | '';
 };
 
-export type ExpenseRequest = {
+export type ExtractRequest = {
   file: UrlResponse;
   type: StatementType;
+};
+
+export type ExpenseResponse = {
+  spending: string;
+  transactions: FormattedExpense[];
 };

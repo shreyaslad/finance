@@ -1,14 +1,22 @@
-import { DollarSign, LucideIcon } from 'lucide-react';
+'use client';
+
+import { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { ComponentType, ReactComponentElement, ReactElement } from 'react';
+import { Skeleton } from './ui/skeleton';
 
 type InfoCardProps = {
   title: string;
   value: string;
+  isLoading: boolean;
   Icon: LucideIcon;
 };
 
-export default function InfoCard({ title, value, Icon }: InfoCardProps) {
+export default function InfoCard({
+  title,
+  value,
+  isLoading,
+  Icon,
+}: InfoCardProps) {
   return (
     <Card className="col-span-2 border-muted">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -19,7 +27,11 @@ export default function InfoCard({ title, value, Icon }: InfoCardProps) {
       </CardHeader>
 
       <CardContent>
-        <div className="text-3xl font-bold">{value}</div>
+        {isLoading ? (
+          <Skeleton className="h-4 w-[250px]" />
+        ) : (
+          <div className="text-3xl font-bold">{value}</div>
+        )}
       </CardContent>
     </Card>
   );
