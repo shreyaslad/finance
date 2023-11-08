@@ -17,17 +17,22 @@ import OpenAI from 'openai';
 const textractClient = new TextractClient({ region: 'us-west-2' });
 const openai = new OpenAI();
 
-const prompt = `Extract the following information from an array of expense reports:
+const prompt = `You are a data extraction robot.
+You are provided with an expense report (an array of strings) and told to extract information to the best of your ability.
+There are extraction settings you must follow to customize how extracted data should be formatted.
+Extract the following information from an array of expense reports:
 - date: string
 - expenseType: "shopping" | "health" | "food" | "services" | "payment"
 - vendor: string
 - price: string
 - location: string
 
-- If a field cannot be found, mark it as null.
+Extraction settings:
+- If a field cannot be found, mark it as null. This is the most important.
+- Convert all relative dates into actual dates, given that today's date is {date}.
+- If a date specifically cannot be found, replace it with the most appropriate date.
 - Fields marked as "Payment" should have an "expenseType" of "payment".
 - Remove plus signs in front of prices.
-- Convert all relative dates into actual dates, given that today's date is {date}.
 
 Expense reports:
 {expense_report}
@@ -91,7 +96,11 @@ export async function POST(request: Request) {
             expenseField.Type?.Text == 'EXPENSE_ROW' &&
             expenseField.ValueDetection?.Text
           ) {
-            expenses.push(expenseField.ValueDetection.Text.replace('\n', ' '));
+            const expenseText = expenseField.ValueDetection.Text.replace(
+              '\n',
+              ' '
+            );
+            expenses.push(expenseText);
           }
         }
       }
@@ -101,16 +110,19 @@ export async function POST(request: Request) {
   console.log(expenses);
   console.log('Parsing expense reports with ChatGPT...');
 
+  const date = new Date().toLocaleDateString();
+  console.log('The current date is: ' + date);
+
   const completion = await openai.chat.completions.create({
     messages: [
       {
         role: 'user',
         content: prompt
-          .replace('{date}', new Date().toDateString())
+          .replace('{date}', date)
           .replace('{expense_report}', expenses.toString()),
       },
     ],
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4',
   });
 
   let formattedExpenses: FormattedExpense[] = JSON.parse(
