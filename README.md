@@ -18,7 +18,14 @@ I need to collect statements from various places where API access (like Plaid) i
 - Wells Fargo
 - Apple Savings
 
-## Note:
+### Tech Stack
+
+- AWS
+- NextJS + Typescript + Kysely
+- Postgres
+- GPT-4
+
+## Note for Deploying:
 
 The following environment variables must be configured in the Next.JS app:
 
