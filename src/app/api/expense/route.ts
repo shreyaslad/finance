@@ -1,4 +1,9 @@
-import { ExpenseResponse, FormattedExpense } from '@/lib/apitypes';
+import {
+  ExpenseResponse,
+  ExpenseType,
+  FormattedExpense,
+  StatementType,
+} from '@/lib/apitypes';
 import { Database } from '@/lib/dbtypes';
 import { PostgresJSDialect } from 'kysely-postgres-js';
 import { Kysely, PostgresDialect } from 'kysely';
@@ -12,6 +17,9 @@ const db = new Kysely<Database>({
 });
 
 export async function GET(request: Request) {
+  console.log('/api/expense');
+  console.log(request);
+
   let expenseResponse: ExpenseResponse = {
     spending: 0,
     transactions: [],
@@ -31,21 +39,28 @@ export async function GET(request: Request) {
   const transactions = await db
     .selectFrom('transactions')
     .selectAll()
+    .orderBy('date desc')
     .execute();
+
+  console.log('Postgres data:');
+  console.log(transactions);
 
   expenseResponse.spending = Number(totalSpending[0].totalPrice);
 
   for (let transaction of transactions) {
     expenseResponse.transactions.push({
       id: transaction.id,
-      date: transaction.date,
-      statementType: transaction.statementType,
-      expenseType: transaction.expenseType,
+      date: transaction.date as string,
+      statementType: transaction.statementtype as StatementType,
+      expenseType: transaction.expensetype as ExpenseType,
       vendor: transaction.vendor,
-      price: transaction.price,
+      price: Number(transaction.price),
       location: transaction.location,
     });
   }
+
+  console.log('Converted transactions:');
+  console.log(expenseResponse.transactions);
 
   return NextResponse.json(expenseResponse);
 }

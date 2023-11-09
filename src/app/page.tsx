@@ -2,12 +2,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import AddButton from '@/components/add-button';
-import WeeklySpending from '@/components/daily-spending';
+import WeeklySpending from '@/components/weekly-spending';
 import AddDialog from '@/components/add-dialog';
 import InfoCardContainer from '@/components/info-card-container';
 import { Button } from '@/components/ui/button';
 
 import { CalendarDays } from 'lucide-react';
+import TransactionsTable from '@/components/transactions-table';
 
 export default async function Home() {
   return (
@@ -30,7 +31,12 @@ export default async function Home() {
 
       <InfoCardContainer />
 
-      <WeeklySpending />
+      <div className="col-span-3">
+        <WeeklySpending />
+      </div>
+      <div className="col-span-5">
+        <TransactionsTable />
+      </div>
     </div>
   );
 }

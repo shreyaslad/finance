@@ -1,4 +1,10 @@
-import { Generated, Insertable, Selectable, Updateable } from 'kysely';
+import {
+  ColumnType,
+  Generated,
+  Insertable,
+  Selectable,
+  Updateable,
+} from 'kysely';
 import { ExpenseType, StatementType } from './apitypes';
 
 export interface Database {
@@ -8,9 +14,9 @@ export interface Database {
 export interface TransactionsTable {
   id: Generated<number>;
 
-  date: Date;
-  statementType: StatementType;
-  expenseType: ExpenseType;
+  date: ColumnType<Date | string>;
+  statementtype: string;
+  expensetype: string;
   vendor: string;
   price: number;
   location: string;

@@ -30,13 +30,13 @@ export type ExpenseType =
   | 'payment';
 
 export type FormattedExpense = {
-  id: number | -1;
-  date: Date;
+  id: number;
+  date: string;
   statementType: StatementType;
-  expenseType: ExpenseType | 'shopping';
-  vendor: string | '';
-  price: number | 0;
-  location: string | '';
+  expenseType: ExpenseType;
+  vendor: string;
+  price: number;
+  location: string;
 };
 
 export type ExtractRequest = {
