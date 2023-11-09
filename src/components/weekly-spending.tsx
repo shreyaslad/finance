@@ -48,7 +48,7 @@ export default function WeeklySpending() {
   const theme = themes.find((theme) => theme.name === config.theme);
 
   return (
-    <Card className="col-span-3 border-muted-foreground">
+    <Card className="col-span-3 border-muted">
       <CardHeader>
         <CardTitle className="text-base font-medium text-muted-foreground">
           Weekly Spending

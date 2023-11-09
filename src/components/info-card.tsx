@@ -21,11 +21,7 @@ export default function InfoCard({ title, value, Icon }: InfoCardProps) {
       </CardHeader>
 
       <CardContent>
-        {/* {isLoading ? (
-          <Skeleton className="h-4 w-[250px]" />
-        ) : ( */}
         <div className="text-3xl font-bold">{value}</div>
-        {/* )} */}
       </CardContent>
     </Card>
   );
