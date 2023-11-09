@@ -1,6 +1,8 @@
 'use client';
 
+import { ExpenseResponse } from '@/lib/apitypes';
 import InfoCard from './info-card';
+import { Skeleton } from './ui/skeleton';
 import { Banknote, CreditCard, DollarSign, Landmark } from 'lucide-react';
 
 import useSWR from 'swr';
@@ -14,23 +16,28 @@ export default function InfoCardContainer() {
     <>
       <InfoCard
         title="Total Spending"
-        value={isLoading ? 'Loading...' : '$' + data.spending}
-        isLoading={isLoading}
+        value={
+          isLoading ? (
+            <Skeleton className="w-full h-4" />
+          ) : (
+            '$' + (data as ExpenseResponse).spending
+          )
+        }
         Icon={Banknote}
       />
       <InfoCard
         title="Transactions"
-        value="30"
-        isLoading={true}
+        value={
+          isLoading ? (
+            <Skeleton className="w-full h-4" />
+          ) : (
+            (data as ExpenseResponse).transactions.length
+          )
+        }
         Icon={CreditCard}
       />
-      <InfoCard
-        title="Net Worth"
-        value="$4321.92"
-        isLoading={true}
-        Icon={DollarSign}
-      />
-      <InfoCard title="Accounts" value="5" isLoading={true} Icon={Landmark} />
+      <InfoCard title="Net Worth" value="$4321.92" Icon={DollarSign} />
+      <InfoCard title="Accounts" value="5" Icon={Landmark} />
     </>
   );
 }

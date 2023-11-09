@@ -6,17 +6,11 @@ import { Skeleton } from './ui/skeleton';
 
 type InfoCardProps = {
   title: string;
-  value: string;
-  isLoading: boolean;
+  value: any;
   Icon: LucideIcon;
 };
 
-export default function InfoCard({
-  title,
-  value,
-  isLoading,
-  Icon,
-}: InfoCardProps) {
+export default function InfoCard({ title, value, Icon }: InfoCardProps) {
   return (
     <Card className="col-span-2 border-muted">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -27,11 +21,11 @@ export default function InfoCard({
       </CardHeader>
 
       <CardContent>
-        {isLoading ? (
+        {/* {isLoading ? (
           <Skeleton className="h-4 w-[250px]" />
-        ) : (
-          <div className="text-3xl font-bold">{value}</div>
-        )}
+        ) : ( */}
+        <div className="text-3xl font-bold">{value}</div>
+        {/* )} */}
       </CardContent>
     </Card>
   );

@@ -35,7 +35,7 @@ export type FormattedExpense = {
   statementType: StatementType;
   expenseType: ExpenseType | 'shopping';
   vendor: string | '';
-  price: string | '0.00';
+  price: number | 0;
   location: string | '';
 };
 
@@ -45,6 +45,6 @@ export type ExtractRequest = {
 };
 
 export type ExpenseResponse = {
-  spending: string;
+  spending: number;
   transactions: FormattedExpense[];
 };

@@ -41,7 +41,7 @@ const data = [
   },
 ];
 
-export default function DailySpending() {
+export default function WeeklySpending() {
   const { theme: mode } = useTheme();
   const [config] = useConfig();
 
@@ -51,7 +51,7 @@ export default function DailySpending() {
     <Card className="col-span-3 border-muted-foreground">
       <CardHeader>
         <CardTitle className="text-base font-medium text-muted-foreground">
-          Daily Spending
+          Weekly Spending
         </CardTitle>
       </CardHeader>
       <CardContent>

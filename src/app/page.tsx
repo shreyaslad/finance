@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import AddButton from '@/components/add-button';
-import DailySpending from '@/components/daily-spending';
+import WeeklySpending from '@/components/daily-spending';
 import AddDialog from '@/components/add-dialog';
 import InfoCardContainer from '@/components/info-card-container';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,7 @@ export default async function Home() {
 
       <InfoCardContainer />
 
-      <DailySpending />
+      <WeeklySpending />
     </div>
   );
 }
