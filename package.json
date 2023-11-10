@@ -37,6 +37,8 @@
     "kysely": "^0.26.3",
     "kysely-postgres-js": "^2.0.0",
     "lucide-react": "^0.284.0",
+    "moment": "^2.29.4",
+    "moment-timezone": "^0.5.43",
     "next": "^14.0.1",
     "next-themes": "^0.2.1",
     "openai": "^4.16.1",

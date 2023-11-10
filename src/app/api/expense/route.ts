@@ -25,12 +25,6 @@ export async function GET(request: Request) {
     transactions: [],
   };
 
-  // const totalSpending = await sql`SELECT SUM(price) from transactions;`;
-  // const transactions = await sql`SELECT * FROM transactions;`;
-  // console.log(transactions);
-
-  // expenseResponse.spending = totalSpending[0].sum.slice(0, -2);
-
   const totalSpending = await db
     .selectFrom('transactions')
     .select(({ fn }) => [fn.sum<number>('transactions.price').as('totalPrice')])

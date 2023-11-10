@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { useTheme } from 'next-themes';
 import { useConfig } from '@/hooks/use-config';
 import { themes } from '@/registry/themes';
+import { Activity, MoveUpRight } from 'lucide-react';
 
 const data = [
   {
@@ -50,8 +51,9 @@ export default function WeeklySpending() {
   return (
     <Card className="col-span-3 border-muted">
       <CardHeader>
-        <CardTitle className="text-base font-medium text-muted-foreground">
+        <CardTitle className="flex flex-row items-center justify-between text-base font-medium text-muted-foreground">
           Weekly Spending
+          <Activity className="w-4 h-4 text-muted-foreground" />
         </CardTitle>
       </CardHeader>
       <CardContent>
