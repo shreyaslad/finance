@@ -32,7 +32,6 @@ Extract the following information from an array of expense reports:
 Extraction settings:
 - If a field cannot be found, mark it as null. This is the most important.
 - Convert all relative dates into actual dates, given that today's date is {date}.
-- If a date specifically cannot be found, replace it with the most appropriate date.
 - Fields marked as "Payment" should have an "expenseType" of "payment".
 - Remove plus signs and dollar signs in front of prices.
 - If fields have more than 3 null values, do not include it
@@ -133,23 +132,6 @@ export async function POST(request: Request) {
   );
 
   console.log(formattedExpenses);
-  console.log('Inserting into database...');
-
-  for (let expense of formattedExpenses) {
-    expense.statementType = extractRequest.type;
-
-    if (expense.vendor && expense.price) {
-      await sql`
-        INSERT INTO transactions (
-          date, statementType, expenseType, vendor, price, location
-        ) VALUES (
-          ${expense.date}, ${expense.statementType}, ${expense.expenseType}, ${expense.vendor}, ${expense.price}, ${expense.location}
-        )
-      `;
-    }
-  }
-
-  console.log('Finished inserting into database');
 
   return NextResponse.json(formattedExpenses);
 }

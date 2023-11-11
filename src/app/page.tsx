@@ -1,13 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import AddButton from '@/components/add-button';
 import WeeklySpending from '@/components/weekly-spending';
-import AddDialog from '@/components/add-dialog';
 import InfoCardContainer from '@/components/info-card-container';
 import { Button } from '@/components/ui/button';
 
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, PlusIcon } from 'lucide-react';
 import TransactionsTable from '@/components/transactions-table';
 
 export default async function Home() {
@@ -24,8 +22,11 @@ export default async function Home() {
             Feb 09, 2023
           </Button>
           <Button variant={'outline'}>Export CSV</Button>
-          <AddButton />
-          <AddDialog />
+          <Link href={'/scan'}>
+            <Button>
+              <PlusIcon className="w-4 h-4" />
+            </Button>
+          </Link>
         </div>
       </div>
 
