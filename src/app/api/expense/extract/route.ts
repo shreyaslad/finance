@@ -16,16 +16,10 @@ import {
   BedrockRuntimeClient,
   InvokeModelCommand,
 } from '@aws-sdk/client-bedrock-runtime';
-import postgres from 'postgres';
+import OpenAI from 'openai';
 
 const textractClient = new TextractClient({ region: 'us-west-2' });
-const bedrockClient = new BedrockRuntimeClient({ region: 'us-west-2' });
-
-type ClaudeResponse = {
-  completion: string;
-  stop_reason: string;
-  stop: string;
-};
+const openai = new OpenAI();
 
 const prompt = `You are a data extraction robot. Accuracy is of utmost importance.
 You are provided with an expense report (an array of strings) and told to extract information to the best of your ability.
@@ -47,7 +41,7 @@ Extraction settings:
 Expense reports:
 {expense_report}
 
-Say no additional words. Output in JSON: [`;
+Say no additional words. Output in JSON:`;
 
 export async function POST(request: Request) {
   const extractRequest: ExtractRequest = await request.json();
@@ -121,45 +115,23 @@ export async function POST(request: Request) {
   const date = new Date().toLocaleDateString();
   console.log('The current date is: ' + date);
 
-  // const completion = await openai.chat.completions.create({
-  //   messages: [
-  //     {
-  //       role: 'user',
-  //       content: prompt
-  //         .replace('{date}', date)
-  //         .replace('{expense_report}', expenses.toString()),
-  //     },
-  //   ],
-  //   model: 'gpt-4',
-  // });
-
-  const command = new InvokeModelCommand({
-    body: JSON.stringify({
-      prompt:
-        '\n\nHuman:' +
-        prompt
+  const completion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: 'user',
+        content: prompt
           .replace('{date}', date)
-          .replace('{expense_report}', expenses.toString()) +
-        '\n\nAssistant:',
-      temperature: 0.5,
-      top_p: 0.999,
-      top_k: 250,
-      max_tokens_to_sample: 800,
-    }),
-    contentType: 'application/json',
-    modelId: 'anthropic.claude-v2',
+          .replace('{expense_report}', expenses.toString()),
+      },
+    ],
+    model: 'gpt-3.5-turbo-1106',
+    temperature: 0.5,
   });
 
-  const bedrockRes = await bedrockClient.send(command);
-  const claudeResponse: ClaudeResponse = JSON.parse(
-    Buffer.from(bedrockRes.body).toString('utf-8')
-  );
-
-  console.log('Claude raw response:');
-  console.log(claudeResponse);
+  console.log(completion.choices[0].message.content);
 
   let formattedExpenses: FormattedExpense[] = JSON.parse(
-    claudeResponse.completion
+    completion.choices[0].message.content || ''
   );
 
   console.log(formattedExpenses);
