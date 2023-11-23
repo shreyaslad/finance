@@ -44,9 +44,8 @@ export default function ScanPage() {
             cols={100}
             rows={20}
             onChange={(e) => setUploadData(JSON.parse(e.target.value))}
-          >
-            {JSON.stringify(uploadData, null, 2)}
-          </Textarea>
+            value={JSON.stringify(uploadData, null, 2)}
+          />
 
           <div className="flex flex-row gap-x-2">
             <Button variant={'outline'} className="w-1/4 mb-4">
