@@ -12,16 +12,24 @@ import {
   TextractClient,
   AnalyzeExpenseCommand,
 } from '@aws-sdk/client-textract';
-import OpenAI from 'openai';
+import {
+  BedrockRuntimeClient,
+  InvokeModelCommand,
+} from '@aws-sdk/client-bedrock-runtime';
 import postgres from 'postgres';
 
 const textractClient = new TextractClient({ region: 'us-west-2' });
-const openai = new OpenAI();
-const sql = postgres(process.env.POSTGRES_CONN_URL || '');
+const bedrockClient = new BedrockRuntimeClient({ region: 'us-west-2' });
+
+type ClaudeResponse = {
+  completion: string;
+  stop_reason: string;
+  stop: string;
+};
 
 const prompt = `You are a data extraction robot. Accuracy is of utmost importance.
 You are provided with an expense report (an array of strings) and told to extract information to the best of your ability.
-There are extraction settings you must follow to customize how extracted data should be formatted.
+
 Extract the following information from an array of expense reports:
 - date: string
 - expenseType: "shopping" | "health" | "food" | "services" | "payment"
@@ -39,9 +47,7 @@ Extraction settings:
 Expense reports:
 {expense_report}
 
-Only output in JSON and say no additional words.
-
-Output in JSON:`;
+Say no additional words. Output in JSON: [`;
 
 export async function POST(request: Request) {
   const extractRequest: ExtractRequest = await request.json();
@@ -110,25 +116,50 @@ export async function POST(request: Request) {
   }
 
   console.log(expenses);
-  console.log('Parsing expense reports with ChatGPT...');
+  console.log('Parsing expense reports with LLM...');
 
   const date = new Date().toLocaleDateString();
   console.log('The current date is: ' + date);
 
-  const completion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: 'user',
-        content: prompt
+  // const completion = await openai.chat.completions.create({
+  //   messages: [
+  //     {
+  //       role: 'user',
+  //       content: prompt
+  //         .replace('{date}', date)
+  //         .replace('{expense_report}', expenses.toString()),
+  //     },
+  //   ],
+  //   model: 'gpt-4',
+  // });
+
+  const command = new InvokeModelCommand({
+    body: JSON.stringify({
+      prompt:
+        '\n\nHuman:' +
+        prompt
           .replace('{date}', date)
-          .replace('{expense_report}', expenses.toString()),
-      },
-    ],
-    model: 'gpt-4',
+          .replace('{expense_report}', expenses.toString()) +
+        '\n\nAssistant:',
+      temperature: 0.5,
+      top_p: 0.999,
+      top_k: 250,
+      max_tokens_to_sample: 800,
+    }),
+    contentType: 'application/json',
+    modelId: 'anthropic.claude-v2',
   });
 
+  const bedrockRes = await bedrockClient.send(command);
+  const claudeResponse: ClaudeResponse = JSON.parse(
+    Buffer.from(bedrockRes.body).toString('utf-8')
+  );
+
+  console.log('Claude raw response:');
+  console.log(claudeResponse);
+
   let formattedExpenses: FormattedExpense[] = JSON.parse(
-    completion.choices[0].message.content || ''
+    claudeResponse.completion
   );
 
   console.log(formattedExpenses);
