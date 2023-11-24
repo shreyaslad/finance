@@ -1,5 +1,6 @@
 import {
-  ExpenseResponse,
+  ExpensePOSTRequest,
+  ExpenseGETResponse,
   ExpenseType,
   FormattedExpense,
   StatementType,
@@ -20,7 +21,7 @@ export async function GET(request: Request) {
   console.log('/api/expense');
   console.log(request);
 
-  let expenseResponse: ExpenseResponse = {
+  let expenseResponse: ExpenseGETResponse = {
     spending: 0,
     transactions: [],
   };
@@ -57,16 +58,19 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  let body: FormattedExpense[] = await request.json();
+  let body: ExpensePOSTRequest = await request.json();
+
+  let statementType = body.statementType;
+  let transactions = body.transactions;
 
   // TODO: Change this to a multiple-row insert
-  for (let response of body) {
+  for (let response of transactions) {
     await db
       .insertInto('transactions')
       .values({
         id: response.id,
         date: response.date,
-        statementtype: response.statementType,
+        statementtype: statementType,
         expensetype: response.expenseType,
         vendor: response.vendor,
         price: response.price,

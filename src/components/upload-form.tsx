@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
 import { Loader2 } from 'lucide-react';
-import { FormattedExpense, UrlResponse } from '@/lib/apitypes';
+import { FormattedExpense, StatementType, UrlResponse } from '@/lib/apitypes';
 import { StatusCodes } from 'http-status-codes';
 import { useAtom } from 'jotai';
 import { uploadAtom } from '@/atoms/upload-atom';
@@ -73,7 +73,11 @@ const formSchema = z.object({
     }),
 });
 
-export default function UploadForm() {
+export default function UploadForm({
+  setStatementType,
+}: {
+  setStatementType: (statmentType: StatementType) => void;
+}) {
   const [processing, setProcessing] = useState(false);
   const [uploadData, setUploadData] = useAtom(uploadAtom);
 
@@ -83,6 +87,10 @@ export default function UploadForm() {
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     const statementType = data.statementType;
+
+    // Pass the selected statement type to the scan page
+    setStatementType(statementType as StatementType);
+
     const file = data.statementFile[0];
 
     console.log('Statement type: ' + statementType);

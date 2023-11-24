@@ -1,6 +1,6 @@
 'use client';
 
-import { ExpenseResponse } from '@/lib/apitypes';
+import { ExpenseGETResponse } from '@/lib/apitypes';
 import InfoCard from './info-card';
 import { Skeleton } from './ui/skeleton';
 import { Banknote, CreditCard, DollarSign, Hash, Landmark } from 'lucide-react';
@@ -20,7 +20,7 @@ export default function InfoCardContainer() {
           isLoading ? (
             <Skeleton className="w-full h-4" />
           ) : (
-            '$' + (data as ExpenseResponse).spending
+            '$' + (data as ExpenseGETResponse).spending
           )
         }
         Icon={Banknote}
@@ -31,7 +31,7 @@ export default function InfoCardContainer() {
           isLoading ? (
             <Skeleton className="w-full h-4" />
           ) : (
-            (data as ExpenseResponse).transactions.length
+            (data as ExpenseGETResponse).transactions.length
           )
         }
         Icon={Hash}

@@ -39,12 +39,21 @@ export type FormattedExpense = {
   location: string;
 };
 
+/* Extract Endpoint */
+
 export type ExtractRequest = {
   file: UrlResponse;
   type: StatementType;
 };
 
-export type ExpenseResponse = {
+/* Expense Endpoint */
+
+export type ExpenseGETResponse = {
   spending: number;
+  transactions: FormattedExpense[];
+};
+
+export type ExpensePOSTRequest = {
+  statementType: string;
   transactions: FormattedExpense[];
 };

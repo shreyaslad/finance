@@ -10,15 +10,20 @@ import { Button } from '@/components/ui/button';
 import UploadForm from '@/components/upload-form';
 import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
+import { StatementType } from '@/lib/apitypes';
 
 export default function ScanPage() {
   const [uploadData, _] = useAtom(uploadAtom);
   const [rawTextareaData, setRawTextareaData] = useState('');
+  const [statementType, setStatementType] = useState<StatementType>();
 
   async function onSubmit() {
     await fetch(`/api/expense`, {
       method: 'POST',
-      body: JSON.stringify(JSON.parse(rawTextareaData)),
+      body: JSON.stringify({
+        statementType: statementType,
+        transactions: JSON.parse(rawTextareaData),
+      }),
     });
   }
 
@@ -40,7 +45,7 @@ export default function ScanPage() {
         </p>
       </div>
 
-      <UploadForm />
+      <UploadForm setStatementType={setStatementType} />
 
       {uploadData.length > 0 ? (
         <div className="flex flex-col mt-4 gap-y-4">
@@ -60,7 +65,6 @@ export default function ScanPage() {
           <div className="flex flex-row gap-x-2">
             <Button variant={'outline'} className="w-1/4 mb-4">
               <X className="w-4 h-4 text-muted-foreground" />
-              {/* <span className="text-muted-foreground">Cancel</span> */}
             </Button>
             <Button className="w-full" onClick={onSubmit}>
               <Check className="w-4 h-4 mr-2" />

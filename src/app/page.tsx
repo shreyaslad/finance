@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 
 import { CalendarDays, PlusIcon } from 'lucide-react';
 import TransactionsTable from '@/components/transactions-table';
+import TableCard from '@/components/transactions-table/table-card';
 
 export default async function Home() {
   return (
@@ -36,7 +37,8 @@ export default async function Home() {
         <WeeklySpending />
       </div>
       <div className="col-span-5">
-        <TransactionsTable />
+        {/* <TransactionsTable /> */}
+        <TableCard />
       </div>
     </div>
   );
