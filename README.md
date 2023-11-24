@@ -1,6 +1,6 @@
 # Finance
 
-Personal finance dashboard that **ingests**, **analyzes**, and **aggregates transaction data** from various financial sources so I don't have to.
+**Ingests**, **analyzes**, and **aggregates transaction data** from various financial sources so I don't have to.
 
 <img src="docs/dashboard-preview.png" width="80%">
 
@@ -38,7 +38,49 @@ The following environment variables must be configured in the Next.JS app:
 
 ### IAM User Configuration
 
-The IAM user configured with those credentials must have access to S3 and Textract. The bucket itself must ahve the following CORS policy:
+The IAM user configured with those credentials must have access to S3 and Textract.
+
+### Uploads S3 Bucket
+
+Artifacts uploaded through the dashboard are stored in an S3 bucket. The bucket is hardcoded to `finance-uploads-592951731404`.
+
+Here's how the frontend works:
+
+1. Frontend makes a POST request to `/api/upload`, the bodies are described below:
+
+```typescript
+export type UploadRequest = {
+  name: string;
+};
+
+export type UrlResponse = {
+  name: string;
+  key: string;
+  bucket: string;
+
+  getUrl: string;
+  uploadUrl: string;
+
+  expires: number;
+};
+```
+
+2. Uploads artifact to S3 bucket using the returned presigned urls
+3. Makes POST request to `/api/extract` with the following bodies:
+
+```typescript
+export type ExtractRequest = {
+  file: UrlResponse;
+  type: StatementType;
+};
+
+export type ExpenseResponse = {
+  spending: number;
+  transactions: FormattedExpense[];
+};
+```
+
+#### S3 CORS Configuration
 
 ```json
 [
