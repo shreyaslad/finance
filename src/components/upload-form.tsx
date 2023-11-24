@@ -119,7 +119,7 @@ export default function UploadForm() {
 
     console.log('Extracting expense information from statement...');
 
-    const expenseRes = await fetch('/api/expense/extract', {
+    const expenseRes = await fetch('/api/extract', {
       method: 'POST',
       body: JSON.stringify({
         file: urlJson,

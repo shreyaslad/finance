@@ -9,9 +9,18 @@ import { Check, MoveLeft, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UploadForm from '@/components/upload-form';
 import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
 
 export default function ScanPage() {
-  const [uploadData, setUploadData] = useAtom(uploadAtom);
+  const [uploadData, _] = useAtom(uploadAtom);
+  const [rawTextareaData, setRawTextareaData] = useState('');
+
+  async function onSubmit() {
+    await fetch(`/api/expense`, {
+      method: 'POST',
+      body: JSON.stringify(JSON.parse(rawTextareaData)),
+    });
+  }
 
   return (
     <div className="max-w-screen-sm m-8">
@@ -43,8 +52,9 @@ export default function ScanPage() {
           <Textarea
             cols={100}
             rows={20}
-            onChange={(e) => setUploadData(JSON.parse(e.target.value))}
-            value={JSON.stringify(uploadData, null, 2)}
+            onChange={(e) => setRawTextareaData(e.target.value)}
+            defaultValue={JSON.stringify(uploadData, null, 2)}
+            contentEditable={true}
           />
 
           <div className="flex flex-row gap-x-2">
@@ -52,7 +62,7 @@ export default function ScanPage() {
               <X className="w-4 h-4 text-muted-foreground" />
               {/* <span className="text-muted-foreground">Cancel</span> */}
             </Button>
-            <Button className="w-full">
+            <Button className="w-full" onClick={onSubmit}>
               <Check className="w-4 h-4 mr-2" />
               Yes, that looks right
             </Button>

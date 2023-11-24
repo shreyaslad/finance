@@ -36,9 +36,6 @@ export async function GET(request: Request) {
     .orderBy('date desc')
     .execute();
 
-  console.log('Postgres data:');
-  console.log(transactions);
-
   expenseResponse.spending = Number(totalSpending[0].totalPrice);
 
   for (let transaction of transactions) {
@@ -53,8 +50,30 @@ export async function GET(request: Request) {
     });
   }
 
-  console.log('Converted transactions:');
+  console.log('Transactions:');
   console.log(expenseResponse.transactions);
 
   return NextResponse.json(expenseResponse);
+}
+
+export async function POST(request: Request) {
+  let body: FormattedExpense[] = await request.json();
+
+  // TODO: Change this to a multiple-row insert
+  for (let response of body) {
+    await db
+      .insertInto('transactions')
+      .values({
+        id: response.id,
+        date: response.date,
+        statementtype: response.statementType,
+        expensetype: response.expenseType,
+        vendor: response.vendor,
+        price: response.price,
+        location: response.location,
+      })
+      .execute();
+  }
+
+  return NextResponse.json(body);
 }

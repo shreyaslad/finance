@@ -30,7 +30,7 @@ export type ExpenseType =
   | 'payment';
 
 export type FormattedExpense = {
-  id: number;
+  id: string;
   date: string;
   statementType: StatementType;
   expenseType: ExpenseType;

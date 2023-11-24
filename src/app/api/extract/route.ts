@@ -7,15 +7,12 @@ import {
 } from '@/lib/apitypes';
 import { StatusCodes } from 'http-status-codes';
 import { NextResponse } from 'next/server';
+import { v4 } from 'uuid';
 
 import {
   TextractClient,
   AnalyzeExpenseCommand,
 } from '@aws-sdk/client-textract';
-import {
-  BedrockRuntimeClient,
-  InvokeModelCommand,
-} from '@aws-sdk/client-bedrock-runtime';
 import OpenAI from 'openai';
 
 const textractClient = new TextractClient({ region: 'us-west-2' });
@@ -98,7 +95,7 @@ export async function POST(request: Request) {
             expenseField.Type?.Text == 'EXPENSE_ROW' &&
             expenseField.ValueDetection?.Text
           ) {
-            const expenseText = expenseField.ValueDetection.Text.replace(
+            const expenseText = expenseField.ValueDetection.Text.replaceAll(
               '\n',
               ' '
             );
@@ -133,6 +130,11 @@ export async function POST(request: Request) {
   let formattedExpenses: FormattedExpense[] = JSON.parse(
     completion.choices[0].message.content || ''
   );
+
+  // Randomly generate an ID for each expense
+  for (let expense of formattedExpenses) {
+    expense.id = v4();
+  }
 
   console.log(formattedExpenses);
 

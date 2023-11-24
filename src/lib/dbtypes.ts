@@ -12,7 +12,7 @@ export interface Database {
 }
 
 export interface TransactionsTable {
-  id: Generated<number>;
+  id: string;
 
   date: ColumnType<Date | string>;
 
