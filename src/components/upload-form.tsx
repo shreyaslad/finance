@@ -29,6 +29,7 @@ import { FormattedExpense, StatementType, UrlResponse } from '@/lib/apitypes';
 import { StatusCodes } from 'http-status-codes';
 import { useAtom } from 'jotai';
 import { uploadAtom } from '@/atoms/upload-atom';
+import { useToast } from './ui/use-toast';
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -80,6 +81,8 @@ export default function UploadForm({
 }) {
   const [processing, setProcessing] = useState(false);
   const [uploadData, setUploadData] = useAtom(uploadAtom);
+
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -134,6 +137,16 @@ export default function UploadForm({
         type: statementType,
       }),
     });
+
+    if (expenseRes.status != StatusCodes.OK) {
+      toast({
+        variant: 'destructive',
+        title: 'Oh no! Something went wrong.',
+        description: 'Failed to parse JSON from expense reports.',
+      });
+
+      return;
+    }
 
     console.log('Extracted expense information from statement');
 

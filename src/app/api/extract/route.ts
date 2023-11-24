@@ -132,7 +132,8 @@ export async function POST(request: Request) {
 
   let rawJSON = JSON.parse(completion.choices[0].message.content || '');
 
-  let formattedExpenses: FormattedExpense[] = rawJSON.expenses;
+  let formattedExpenses: FormattedExpense[] =
+    rawJSON.expenses || rawJSON.expenseReports;
 
   // Randomly generate an ID for each expense
   for (let expense of formattedExpenses) {
