@@ -51,7 +51,7 @@ export default function WeeklySpending() {
   return (
     <Card className="col-span-3 border-muted">
       <CardHeader>
-        <CardTitle className="flex flex-row items-center justify-between text-base font-medium text-muted-foreground">
+        <CardTitle className="flex flex-row items-center justify-between text-base font-medium tracking-normal text-muted-foreground">
           Weekly Spending
           <Activity className="w-4 h-4 text-muted-foreground" />
         </CardTitle>
