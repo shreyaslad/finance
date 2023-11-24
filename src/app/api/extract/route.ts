@@ -38,7 +38,7 @@ Extraction settings:
 Expense reports:
 {expense_report}
 
-Say no additional words. Output in JSON:`;
+Say no additional words and output a JSON array:`;
 
 export async function POST(request: Request) {
   const extractRequest: ExtractRequest = await request.json();
@@ -121,15 +121,18 @@ export async function POST(request: Request) {
           .replace('{expense_report}', expenses.toString()),
       },
     ],
+    response_format: {
+      type: 'json_object',
+    },
     model: 'gpt-3.5-turbo-1106',
     temperature: 0.5,
   });
 
   console.log(completion.choices[0].message.content);
 
-  let formattedExpenses: FormattedExpense[] = JSON.parse(
-    completion.choices[0].message.content || ''
-  );
+  let rawJSON = JSON.parse(completion.choices[0].message.content || '');
+
+  let formattedExpenses: FormattedExpense[] = rawJSON.expenses;
 
   // Randomly generate an ID for each expense
   for (let expense of formattedExpenses) {
