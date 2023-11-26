@@ -25,7 +25,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from './ui/button';
 import { Loader2 } from 'lucide-react';
-import { FormattedExpense, StatementType, UrlResponse } from '@/lib/apitypes';
+import { FormattedExpense, StatementType, UrlResponse } from '@/lib/api';
 import { StatusCodes } from 'http-status-codes';
 import { useAtom } from 'jotai';
 import { uploadAtom } from '@/atoms/upload-atom';

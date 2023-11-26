@@ -1,6 +1,6 @@
 'use client';
 
-import { ExpenseGETResponse } from '@/lib/apitypes';
+import { ExpenseGETResponse } from '@/lib/api';
 import InfoCard from './info-card';
 import { Skeleton } from './ui/skeleton';
 import { Banknote, CreditCard, DollarSign, Hash, Landmark } from 'lucide-react';

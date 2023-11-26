@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import DataTable from './data-table';
 import useSWR from 'swr';
 import { transactionsColumns } from './columns';
-import { ExpenseGETResponse } from '@/lib/apitypes';
+import { ExpenseGETResponse } from '@/lib/api';
 
 export default function TableCard() {
   const { data, error, isLoading } = useSWR('/api/expense', (url) =>

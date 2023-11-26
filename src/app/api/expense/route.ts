@@ -4,8 +4,8 @@ import {
   ExpenseType,
   FormattedExpense,
   StatementType,
-} from '@/lib/apitypes';
-import { Database } from '@/lib/dbtypes';
+} from '@/lib/api';
+import { Database } from '@/lib/database';
 import { PostgresJSDialect } from 'kysely-postgres-js';
 import { Kysely, PostgresDialect } from 'kysely';
 import { NextResponse } from 'next/server';
@@ -70,8 +70,8 @@ export async function POST(request: Request) {
       .values({
         id: response.id,
         date: response.date,
-        statementtype: statementType,
-        expensetype: response.expenseType,
+        statementtype: statementType as StatementType,
+        expensetype: response.expenseType as ExpenseType,
         vendor: response.vendor,
         price: response.price,
         location: response.location,

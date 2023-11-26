@@ -14,7 +14,7 @@ import { Check, Loader2, MoveLeft, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UploadForm from '@/components/upload-form';
 import { Textarea } from '@/components/ui/textarea';
-import { StatementType } from '@/lib/apitypes';
+import { StatementType } from '@/lib/api';
 import { StatusCodes } from 'http-status-codes';
 
 export default function ScanPage() {

@@ -4,7 +4,7 @@ import {
   FormattedExpense,
   StatementType,
   UrlResponse,
-} from '@/lib/apitypes';
+} from '@/lib/api';
 import { StatusCodes } from 'http-status-codes';
 import { NextResponse } from 'next/server';
 import { v4 } from 'uuid';

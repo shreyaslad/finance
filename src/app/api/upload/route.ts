@@ -7,7 +7,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 import { NextResponse } from 'next/server';
 import { StatusCodes } from 'http-status-codes';
-import { BUCKET, EXPIRATION, UrlResponse } from '@/lib/apitypes';
+import { BUCKET, EXPIRATION, UrlResponse } from '@/lib/api';
 import { randomUUID } from 'crypto';
 
 const s3Client = new S3Client({ region: 'us-west-2' });

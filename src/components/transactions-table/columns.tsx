@@ -1,4 +1,4 @@
-import { FormattedExpense } from '@/lib/apitypes';
+import { FormattedExpense } from '@/lib/api';
 import { ColumnDef } from '@tanstack/react-table';
 import moment from 'moment';
 
