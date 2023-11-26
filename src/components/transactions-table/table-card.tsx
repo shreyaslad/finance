@@ -1,7 +1,13 @@
 'use client';
 
 import { CreditCard } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
 import DataTable from './data-table';
 import useSWR from 'swr';
 import { transactionsColumns } from './columns';
@@ -15,7 +21,12 @@ export default function TableCard() {
   return (
     <Card className="border-muted">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-4xl font-bold">All Transactions</CardTitle>
+        <div>
+          <CardTitle className="text-3xl font-bold">All Transactions</CardTitle>
+          <CardDescription>
+            See your recent transactions for this time period.
+          </CardDescription>
+        </div>
         <CreditCard className="text-foreground" />
       </CardHeader>
 

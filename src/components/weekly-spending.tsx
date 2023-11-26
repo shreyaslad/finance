@@ -58,7 +58,7 @@ export default function WeeklySpending() {
       </CardHeader>
       <CardContent>
         <div className="text-3xl font-bold">$1290.29</div>
-        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+        <p className="text-sm text-muted-foreground">+20.1% from last month</p>
         <div className="h-[80px]">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
