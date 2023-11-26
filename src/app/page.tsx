@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { Button } from '@/components/ui/button';
 import WeeklySpending from '@/components/weekly-spending';
 import InfoCardContainer from '@/components/info-card-container';
-import { Button } from '@/components/ui/button';
-
-import { CalendarDays, PlusIcon } from 'lucide-react';
-import TransactionsTable from '@/components/transactions-table';
 import TableCard from '@/components/transactions-table/table-card';
+import DatePicker from '@/components/date-picker';
+
+import { PlusIcon } from 'lucide-react';
 
 export default async function Home() {
   return (
@@ -18,10 +18,7 @@ export default async function Home() {
         </h2>
 
         <div className="flex flex-row justify-between gap-2">
-          <Button variant={'outline'} className="text-sm">
-            <CalendarDays className="w-8 h-8 pr-3 stroke-1" /> Jan 20, 2023 -
-            Feb 09, 2023
-          </Button>
+          <DatePicker />
           <Button variant={'outline'}>Export CSV</Button>
           <Link href={'/scan'}>
             <Button>
@@ -37,7 +34,6 @@ export default async function Home() {
         <WeeklySpending />
       </div>
       <div className="col-span-5">
-        {/* <TransactionsTable /> */}
         <TableCard />
       </div>
     </div>
