@@ -26,4 +26,8 @@ export const statementTypes = [
     value: 'applecard',
     label: 'Apple Card',
   },
+  {
+    value: 'fidelity',
+    label: 'Fidelity',
+  },
 ];
