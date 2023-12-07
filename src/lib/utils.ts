@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const statementTypes = [
+export const StatementMappings = [
   {
     value: 'wf',
     label: 'Wells Fargo',

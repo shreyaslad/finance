@@ -14,10 +14,8 @@ import { Check, Loader2, MoveLeft, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import UploadForm from '@/components/upload-form';
 import { Textarea } from '@/components/ui/textarea';
-import { StatementType } from '@/lib/api';
 import { StatusCodes } from 'http-status-codes';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TabsContent } from '@radix-ui/react-tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {
   Form,
   FormControl,
@@ -27,9 +25,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Select,
   SelectContent,
@@ -37,8 +32,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { statementTypes } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import { z } from 'zod';
+
+import { StatementType } from '@/lib/api';
+import { StatementMappings } from '@/lib/utils';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 function ScanPage() {
   const [uploadData, _] = useAtom(uploadAtom);
@@ -129,14 +129,17 @@ function BalancePage() {
     statementType: z.string({
       required_error: 'Please select a statement type.',
     }),
-    balance: z.number(),
+    balance: z.coerce.number({
+      required_error: 'Balance is required',
+      invalid_type_error: 'Balance must be a number',
+    }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     console.log(data);
   }
 
@@ -170,7 +173,7 @@ function BalancePage() {
                   </FormControl>
 
                   <SelectContent>
-                    {statementTypes.map((item) => (
+                    {StatementMappings.map((item) => (
                       <SelectItem key={item.value} value={item.value}>
                         {item.label}
                       </SelectItem>
@@ -193,7 +196,13 @@ function BalancePage() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Balance</FormLabel>
-                <Input />
+                <div className="flex flex-row items-center">
+                  <p className="mr-2 text-muted-foreground">$</p>
+                  <Input
+                    placeholder="0.00"
+                    {...form.register('balance', { required: true })}
+                  />
+                </div>
 
                 <FormDescription>
                   Enter the balance of the selected bank account.

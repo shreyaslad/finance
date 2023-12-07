@@ -30,7 +30,7 @@ import { StatusCodes } from 'http-status-codes';
 import { useAtom } from 'jotai';
 import { uploadAtom } from '@/atoms/upload-atom';
 import { useToast } from './ui/use-toast';
-import { statementTypes } from '@/lib/utils';
+import { StatementMappings } from '@/lib/utils';
 
 const MAX_FILE_SIZE = 500000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -149,7 +149,7 @@ export default function UploadForm({
                 </FormControl>
 
                 <SelectContent>
-                  {statementTypes.map((item) => (
+                  {StatementMappings.map((item) => (
                     <SelectItem key={item.value} value={item.value}>
                       {item.label}
                     </SelectItem>
