@@ -20,7 +20,7 @@ export default async function Home() {
         <div className="flex flex-row justify-between gap-2">
           <DatePicker />
           <Button variant={'outline'}>Export CSV</Button>
-          <Link href={'/scan'}>
+          <Link href={'/new'}>
             <Button>
               <PlusIcon className="w-4 h-4" />
             </Button>

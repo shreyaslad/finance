@@ -16,8 +16,10 @@ import UploadForm from '@/components/upload-form';
 import { Textarea } from '@/components/ui/textarea';
 import { StatementType } from '@/lib/api';
 import { StatusCodes } from 'http-status-codes';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TabsContent } from '@radix-ui/react-tabs';
 
-export default function ScanPage() {
+function ScanPage() {
   const [uploadData, _] = useAtom(uploadAtom);
   const [rawTextareaData, setRawTextareaData] = useState('');
   const [statementType, setStatementType] = useState<StatementType>();
@@ -51,19 +53,12 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="max-w-screen-sm m-8">
-      <Link href={'/'}>
-        <Button variant={'outline'} className="mb-4">
-          <MoveLeft className="w-4 h-4 mr-2 text-muted-foreground" />
-          <span className="font-semibold text-muted-foreground">Back</span>
-        </Button>
-      </Link>
-
+    <div className="p-4 border rounded-lg border-muted">
       <div className="mb-4">
         <h2 className="text-3xl font-semibold tracking-tight scroll-m-20 first:mt-0">
           Scan Statement
         </h2>
-        <p className="text-sm font-medium tracking-tight text-muted-foreground">
+        <p className="text-sm font-medium text-muted-foreground">
           Scan a bank or credit card statement
         </p>
       </div>
@@ -104,6 +99,49 @@ export default function ScanPage() {
           </div>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function BalancePage() {
+  return (
+    <div className="p-4 border rounded-lg border-muted">
+      <div className="mb-4">
+        <h2 className="text-3xl font-semibold tracking-tight scroll-m-20 first:mt-0">
+          Record Balance
+        </h2>
+        <p className="text-sm font-medium text-muted-foreground">
+          Update the current balance for one or more of your accounts
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function NewPage() {
+  return (
+    <div className="max-w-screen-sm m-8">
+      <Link href={'/'}>
+        <Button variant={'outline'} className="mb-4">
+          <MoveLeft className="w-4 h-4 mr-2 text-muted-foreground" />
+          <span className="font-semibold text-muted-foreground">Back</span>
+        </Button>
+      </Link>
+
+      <Tabs defaultValue="scan">
+        <TabsList className="mb-4">
+          <TabsTrigger value="scan">Scan Statement</TabsTrigger>
+          <TabsTrigger value="balance">Record Balance</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="scan">
+          <ScanPage />
+        </TabsContent>
+
+        <TabsContent value="balance">
+          <BalancePage />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
