@@ -46,7 +46,7 @@ export type UpdateTransaction = Updateable<TransactionsTable>;
 export interface BalancesTable {
   id: string;
 
-  date: ColumnType<Date | string>;
+  timestamp: ColumnType<Date | string>;
   statementtype: StatementType;
 
   balance: number;

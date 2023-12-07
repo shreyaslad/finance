@@ -19,7 +19,8 @@ export type StatementType =
   | 'citi'
   | 'amex'
   | 'applesavings'
-  | 'applecard';
+  | 'applecard'
+  | 'fidelity';
 
 export type ExpenseType =
   | 'shopping'
@@ -37,6 +38,15 @@ export type FormattedExpense = {
   vendor: string;
   price: number;
   location: string;
+};
+
+export type Balance = {
+  id: string;
+
+  timestamp: Date;
+  statementType: StatementType;
+
+  balance: number;
 };
 
 /* Extract Endpoint */
@@ -57,3 +67,12 @@ export type ExpensePOSTRequest = {
   statementType: string;
   transactions: FormattedExpense[];
 };
+
+/* Balance Endpoint */
+
+export type BalanceGETResponse = {
+  total: number;
+  balances: Balance[];
+};
+
+export type BalancePOSTRequest = Balance[];

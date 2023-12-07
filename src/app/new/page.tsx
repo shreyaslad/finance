@@ -18,6 +18,27 @@ import { StatementType } from '@/lib/api';
 import { StatusCodes } from 'http-status-codes';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TabsContent } from '@radix-ui/react-tabs';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { statementTypes } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
 
 function ScanPage() {
   const [uploadData, _] = useAtom(uploadAtom);
@@ -53,7 +74,7 @@ function ScanPage() {
   }
 
   return (
-    <div className="p-4 border rounded-lg border-muted">
+    <div className="p-6 border rounded-lg border-muted">
       <div className="mb-4">
         <h2 className="text-3xl font-semibold tracking-tight scroll-m-20 first:mt-0">
           Scan Statement
@@ -104,8 +125,23 @@ function ScanPage() {
 }
 
 function BalancePage() {
+  const formSchema = z.object({
+    statementType: z.string({
+      required_error: 'Please select a statement type.',
+    }),
+    balance: z.number(),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+  });
+
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log(data);
+  }
+
   return (
-    <div className="p-4 border rounded-lg border-muted">
+    <div className="p-6 border rounded-lg border-muted">
       <div className="mb-4">
         <h2 className="text-3xl font-semibold tracking-tight scroll-m-20 first:mt-0">
           Record Balance
@@ -114,13 +150,70 @@ function BalancePage() {
           Update the current balance for one or more of your accounts
         </p>
       </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="statementType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Statement Type</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a source" />
+                    </SelectTrigger>
+                  </FormControl>
+
+                  <SelectContent>
+                    {statementTypes.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <FormDescription>
+                  Choose a statement type from one of the sources above.
+                </FormDescription>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="balance"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Balance</FormLabel>
+                <Input />
+
+                <FormDescription>
+                  Enter the balance of the selected bank account.
+                </FormDescription>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
     </div>
   );
 }
 
 export default function NewPage() {
   return (
-    <div className="max-w-screen-sm m-8">
+    <div className="flex flex-col max-w-screen-sm m-8 gap-y-4">
       <Link href={'/'}>
         <Button variant={'outline'} className="mb-4">
           <MoveLeft className="w-4 h-4 mr-2 text-muted-foreground" />
