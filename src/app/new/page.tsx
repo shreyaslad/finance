@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { useToast } from '@/components/ui/use-toast';
+import { toast, useToast } from '@/components/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { redirect } from 'next/navigation';
 
@@ -125,6 +125,8 @@ function ScanPage() {
 }
 
 function BalancePage() {
+  const { toast } = useToast();
+
   const formSchema = z.object({
     statementType: z.string({
       required_error: 'Please select a statement type.',
@@ -140,7 +142,30 @@ function BalancePage() {
   });
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
+    const balanceRes = await fetch('/api/balance', {
+      method: 'POST',
+      body: JSON.stringify([
+        {
+          ...data,
+          timestamp: new Date().getTime(),
+        },
+      ]),
+    });
+
+    if (balanceRes.status != StatusCodes.OK) {
+      toast({
+        variant: 'destructive',
+        title: 'Oh no! Something went wrong.',
+        description: 'Failed to update balance.',
+      });
+
+      return;
+    }
+
+    toast({
+      title: 'Success!',
+      description: `Updated ${data.statementType} balance to $${data.balance}`,
+    });
   }
 
   return (

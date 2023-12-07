@@ -9,6 +9,7 @@ import { ExpenseType, StatementType } from './api';
 
 export interface Database {
   transactions: TransactionsTable;
+  balances: BalancesTable;
 }
 
 /**
